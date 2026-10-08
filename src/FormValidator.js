@@ -110,4 +110,4 @@ export default class FormValidator {
   }
 }
 
-export { FormValidator, InputFeedbackElement };
+export { FormValidator, MyInputElement };

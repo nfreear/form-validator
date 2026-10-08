@@ -26,7 +26,7 @@ Given a HTML form:
   <label for="name">Name</label>
 
   <my-input>
-    <input name="name" minlength="2" required>
+    <input id="name" name="name" minlength="2" required>
     <!-- Error messages appear here. -->
   </my-input>
 
@@ -47,6 +47,9 @@ validator.validate();
 // More useful: setup validation on pre-submit.
 validator.addPreSubmitEventHandler();
 ```
+
+## Accessibility
+
 
 [fa]: https://web.dev/articles/more-capable-form-controls
 [inp]: https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement#instance_properties

@@ -4,5 +4,11 @@
   "exports": {
     ".": "src/FormValidator.js",
     "./element": "src/MyInputElement.js"
+  },
+  "devDependencies": {
+    "servor": "^4.0.2"
+  },
+  "scripts": {
+    "start": "npx servor"
   }
 }
