@@ -46,6 +46,7 @@ validator.validate();
 
 // More useful: setup validation on pre-submit.
 validator.addPreSubmitEventHandler();
+validator.addBlurEventHandler();
 ```
 
 ## Accessibility

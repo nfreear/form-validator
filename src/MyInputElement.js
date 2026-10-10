@@ -14,11 +14,13 @@ export default class MyInputElement extends HTMLElement {
   #rateLimitMS = 500;
   // static #count = 0;
   #index;
-  #prefix = 'feedback_';
+  #prefix = 'MyInputElement_';
   #input;
   #statusElem;
   #valid;
   #lastUpdate;
+  #attributes = 'autocomplete maxlength minlength pattern required type'.split(' ');
+// #attributes = ['autocomplete','maxlength','minlength','pattern','required','type'];
 
   set message (str) {
     setTimeout(() => { this.#statusElem.textContent = str; }, 25);
@@ -32,6 +34,7 @@ export default class MyInputElement extends HTMLElement {
 
   get message () { return this.#statusElem.textContent; }
   get #selector () { return this.getAttribute('selector') || 'input, select, textarea'; }
+  get #name () { return this.#input.name || this.#input.id; }
 
   constructor () {
     super();
@@ -42,12 +45,21 @@ export default class MyInputElement extends HTMLElement {
 
   connectedCallback () {
     this.#input = this.querySelector(this.#selector);
-    console.assert(this.#input, 'Missing input');
+    console.assert(this.#input, `Missing input: ${this.#selector}`);
     const ID = `${this.#prefix}${this.#index}`;
     this.#input.setAttribute('aria-describedby', ID);
     this.id = ID;
 
     this.#input.addEventListener('invalid', (ev) => this.#onInvalid(ev));
+    this.#input.addEventListener('blur', (ev) => this.#onCheckValidity(ev));
+    this.#copyAttributes();
+  }
+
+  #copyAttributes () {
+    const FILT = this.#attributes.filter((at) => this.hasAttribute(at) && !this.#input.hasAttribute(at));
+    FILT.forEach((attr) => this.#input.setAttribute(attr, this.getAttribute(attr)));
+
+    console.debug('my-input:', FILT, [this]);
   }
 
   #createElements () {
@@ -69,10 +81,9 @@ export default class MyInputElement extends HTMLElement {
     const style = document.createElement('style');
     style.textContent = `
   [ data-valid = false ]:before {
-    content: var(--my-input-invalid-char, '❌') / 'Error:';
+    content: var(--my-input-invalid-char, '⚠️') / var(--my-input-invalid-text, 'Error:');
     margin-right: var(--my-input-invalid-char-margin, .3rem);
-  }
-    `;
+  }`; /* '⚠️' '❌' */
     return style;
   }
 
@@ -82,9 +93,13 @@ export default class MyInputElement extends HTMLElement {
       return;
     }
     this.#lastUpdate = Date.now();
-    const { target } = event;
-    this.message = target.validationMessage;
+    this.#onCheckValidity(event);
+  }
+
+  #onCheckValidity (event) {
+    const { target, type } = event;
     this.valid = target.checkValidity();
-    console.warn('Invalid:', target.name || target.id, event);
+    this.message = target.validationMessage;
+    console[this.#valid ? 'debug' : 'warn'](type, this.#name, event);
   }
 }

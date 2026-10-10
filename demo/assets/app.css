@@ -1,0 +1,70 @@
+my-input {
+  /* --my-input-invalid-char: '❌'; */
+  --my-input-invalid-text: 'Warning:';
+  --my-input-invalid-char-margin: .3rem;
+
+  display: inline-block;
+  min-height: 3.4rem;
+
+  input,
+  &::part(alert) {
+    display: block;
+  }
+
+  &::part(alert) {
+    color: #fcc;
+    font-size: small;
+    max-width: 26rem;
+    margin-top: .15rem;
+  }
+}
+
+label {
+  display: inline-block;
+  min-width: 5rem;
+  padding-top: .3rem;
+  vertical-align: top;
+}
+
+input {
+  background-color: #f4f4f4;
+  border-radius: .25rem;
+  font-size: inherit;
+  padding: .25rem .5rem;
+}
+
+output {
+  display: inline-block;
+  min-width: 8rem;
+  min-height: 1.2rem;
+}
+
+button {
+  font-size: larger;
+  margin-top: .5rem;
+  padding: .5rem 1rem;
+}
+
+body {
+  background-color: #222;
+  color: #f8f8f8;
+  font-family: sans-serif;
+  line-height: 1.5;
+  margin: auto;
+  max-width: 32rem;
+  padding: 0 1rem;
+
+  a[href] {
+    color: #acf;
+  }
+}
+
+footer {
+  border-top: 1px dotted gray;
+  margin-top: 3rem;
+}
+
+* {
+  outline-offset: .2rem;
+  text-underline-offset: .2rem;
+}

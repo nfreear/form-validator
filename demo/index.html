@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="assets/app.css">
+
+  <title>form-validator</title>
+
+  <h1>form-validator</h1>
+
+  <main>
+    <form>
+      <p>
+        <label for="name">Your name</label>
+
+        <my-input minlength="2" autocomplete="name" required>
+          <input id="name" name="name">
+          <!-- Error messages appear here. -->
+        </my-input>
+      </p>
+      <p>
+        <label for="email">Your email</label>
+
+        <my-input type="email" minlength="8" autocomplete="email" required>
+          <input id="email" name="email">
+        </my-input>
+      </p>
+      <p>
+        <button type="submit">Submit</button>
+      </p>
+      <p>
+        <output id="output"></output>
+      </p>
+    </form>
+  </main>
+
+  <footer>
+    <p>Source: <a href="https://github.com/nfreear/form-validator">@nfreear/form-validator</a></p>
+  </footer>
+
+  <script type="module" src="assets/app.js?run"></script>
+</html>

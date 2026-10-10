@@ -3,7 +3,8 @@
   "type": "module",
   "exports": {
     ".": "src/FormValidator.js",
-    "./element": "src/MyInputElement.js"
+    "./element": "src/MyInputElement.js",
+    "./app": "demo/assets/app.js"
   },
   "devDependencies": {
     "servor": "^4.0.2"

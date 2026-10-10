@@ -5,7 +5,9 @@ const { customElements, HTMLFormElement } = globalThis;
 /**
  * Run `checkValidity()` on all fields in a HTML form, triggering `invalid` events.
  *
+ * @see https://github.com/nfreear/form-validator
  * @author Nick Freear, 06-Oct-2026.
+ * @license MIT
  */
 export default class FormValidator {
   #fieldRegex;
@@ -15,20 +17,12 @@ export default class FormValidator {
 
   get form () { return this.#form; }
   get states () { return this.#states; }
+  get formValid () { return !!Math.floor(this.#validFields.length / this.#length); }
 
   get #elements () { return Array.from(this.#form.elements); }
-  get #fields () { return this.#elements.filter((el) => this.#fieldRegex.test(el.tagName)); } // el.tagName !== 'OUTPUT'); }
+  get #fields () { return this.#elements.filter(el => this.#fieldRegex.test(el.tagName)); } // el.tagName !== 'OUTPUT'); }
   get #validFields () { return this.#states.filter(it => it.valid); }
   get #length () { return this.#fields.length; }
-
-  get formValid () {
-    return !!Math.floor(this.#validFields.length / this.#length);
-  }
-
-  /* get #reduce () {
-    const initial = true;
-    const result = this.#states.reduce((acc, current) => current.valid === false, initial);
-  } */
 
   constructor (formSelector = 0, fieldRegex, target = document) {
     this.#fieldRegex = fieldRegex || /input|select|textarea/i;
@@ -74,16 +68,14 @@ export default class FormValidator {
     return this.formValid;
   }
 
-  /* report (selector = 'my-feedback') {
-    this.#states.forEach((it) => {
-      const feedbackElem = it.elem.closest(selector);
-      console.assert(feedbackElem, `Missing feedback element: ${it.name}`);
-      if (feedbackElem) {
-        feedbackElem.message = it.valid ? '' : it.message;
-        feedbackElem.valid = it.valid;
+  addBlurEventHandler () {
+    this.#form.addEventListener('focusout', ({ target }) => { // 'focusout' bubbles.
+      if (target.willValidate && target.checkValidity) {
+        target.checkValidity();
+        console.debug('Valid? (blur)', target.validity, target);
       }
     });
-  } */
+  }
 
   addSubmitEventHandler () {
     this.#form.addEventListener('submit', (ev) => {
@@ -101,7 +93,6 @@ export default class FormValidator {
     console.assert(submitButton, 'Missing submit button');
     submitButton.addEventListener('click', (ev) => {
       this.validate();
-      // this.report();
       if (!this.formValid) {
         ev.preventDefault();
       }
