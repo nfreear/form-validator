@@ -21,6 +21,7 @@ export default class MyInputElement extends HTMLElement {
   #lastUpdate;
   #attributes = 'autocomplete maxlength minlength pattern required type'.split(' ');
 // #attributes = ['autocomplete','maxlength','minlength','pattern','required','type'];
+  #valueMissingText = 'Please fill in the %s field.';
 
   set message (str) {
     setTimeout(() => { this.#statusElem.textContent = str; }, 25);
@@ -35,6 +36,22 @@ export default class MyInputElement extends HTMLElement {
   get message () { return this.#statusElem.textContent; }
   get #selector () { return this.getAttribute('selector') || 'input, select, textarea'; }
   get #name () { return this.#input.name || this.#input.id; }
+  get #validity () { return this.#input.validity; }
+  get #uniqueID () { return `${this.#prefix}${this.#index}`; }
+
+  get #accName () {
+    console.assert(this.#input && this.#input.labels.length, 'No labels found');
+    const labelEl = this.#input.labels[0];
+    console.assert(labelEl, 'No label element');
+    return labelEl.textContent;
+  }
+
+  /** @wcag SC 3.3.3 Error Suggestion (more-specific error messages)
+   */
+  get #validationMessage () {
+    const vmText = this.#valueMissingText.replace('%s', this.#accName);
+    return this.#validity.valueMissing ? vmText : this.#input.validationMessage;
+  }
 
   constructor () {
     super();
@@ -46,9 +63,8 @@ export default class MyInputElement extends HTMLElement {
   connectedCallback () {
     this.#input = this.querySelector(this.#selector);
     console.assert(this.#input, `Missing input: ${this.#selector}`);
-    const ID = `${this.#prefix}${this.#index}`;
-    this.#input.setAttribute('aria-describedby', ID);
-    this.id = ID;
+    this.#input.setAttribute('aria-describedby', this.#uniqueID); /** @wcag SC 1.3.1 Info and Relationships */
+    this.id = this.#uniqueID;
 
     this.#input.addEventListener('invalid', (ev) => this.#onInvalid(ev));
     this.#input.addEventListener('blur', (ev) => this.#onCheckValidity(ev));
@@ -69,7 +85,7 @@ export default class MyInputElement extends HTMLElement {
     // const icon = document.createElement('x-icon');
     const span = this.#statusElem = document.createElement('span');
     span.setAttribute('part', 'alert');
-    span.setAttribute('role', 'alert');
+    span.setAttribute('role', 'alert'); /** @wcag SC 3.3.1 Error Identification (call-to-action) */
     // icon.setAttribute('part', 'icon');
     root.appendChild(slot);
     root.appendChild(style);
@@ -99,7 +115,7 @@ export default class MyInputElement extends HTMLElement {
   #onCheckValidity (event) {
     const { target, type } = event;
     this.valid = target.checkValidity();
-    this.message = target.validationMessage;
+    this.message = this.#validationMessage;
     console[this.#valid ? 'debug' : 'warn'](type, this.#name, event);
   }
 }
