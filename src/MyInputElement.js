@@ -29,7 +29,7 @@ export default class MyInputElement extends HTMLElement {
 
   set valid (isValid) {
     this.#valid = isValid;
-    this.setAttribute('valid', isValid);
+    this.dataset.valid = isValid;
     this.#statusElem.dataset.valid = isValid;
   }
 

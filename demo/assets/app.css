@@ -6,7 +6,6 @@ my-input {
   display: inline-block;
   min-height: 3.4rem;
 
-  input,
   &::part(alert) {
     display: block;
   }
@@ -15,22 +14,36 @@ my-input {
     color: #fcc;
     font-size: small;
     max-width: 26rem;
-    margin-top: .15rem;
+    margin-top: .2rem;
+    margin-left: .2rem;
+  }
+
+  &[ data-valid = false ] {
+    input {
+      background-color: #fee;
+      border-color: red;
+    }
   }
 }
 
 label {
   display: inline-block;
   min-width: 5rem;
-  padding-top: .3rem;
+  padding-top: .25rem;
   vertical-align: top;
 }
 
 input {
   background-color: #f4f4f4;
+  border: 1px inset silver;
   border-radius: .25rem;
   font-size: inherit;
   padding: .25rem .5rem;
+
+  &[ type = checkbox ] {
+    height: 1.2rem;
+    width: 1.2rem;
+  }
 }
 
 output {
